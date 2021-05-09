@@ -4,12 +4,12 @@ import {FileFlag, ActionType} from '../core/file_flag';
 import {File} from '../core/file';
 import {default as Stats} from '../core/node_fs_stats';
 import PreloadFile from '../generic/preload_file';
-import LockedFS from '../generic/locked_fs';
+import LockedFS2 from '../generic/locked_fs2';
 import * as path from 'path';
 /**
  * @hidden
  */
-const deletionLogPath = '/.deletedFiles.log';
+export const deletionLogPath = '/.browserfs_deletedFiles.log';
 
 /**
  * Given a read-only mode, makes it writable.
@@ -356,6 +356,7 @@ export class UnlockedOverlayFS extends BaseFileSystem implements FileSystem {
       if (err && err.errno === ErrorCode.ENOENT) {
         if (this._deletedFiles[p]) {
           cb(ApiError.ENOENT(p));
+          return;
         }
         this._readable.stat(p, isLstat, (err: ApiError, stat?: Stats) => {
           if (stat) {
@@ -991,7 +992,7 @@ export interface OverlayFSOptions {
  * writable file system. Deletes are persisted via metadata stored on the writable
  * file system.
  */
-export default class OverlayFS extends LockedFS<UnlockedOverlayFS> {
+export default class OverlayFS extends LockedFS2<UnlockedOverlayFS> {
   public static readonly Name = "OverlayFS";
 
   public static readonly Options: FileSystemOptions = {

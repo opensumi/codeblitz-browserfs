@@ -1,5 +1,5 @@
 {
-  "name": "browserfs",
+  "name": "@alipay/alex-browserfs",
   "version": "2.0.0",
   "description": "A filesystem in your browser!",
   "main": "dist/browserfs.js",
@@ -98,8 +98,9 @@
     "test:build": "npm-run-all test:build:tsc --parallel test:build:rollup test:build:rollup-worker --sequential test:build:webpack",
     "test:watch": "npm-run-all --parallel test:watch:tsc test:watch:rollup test:watch:rollup-worker test:watch:webpack",
     "dist:build:node": "tsc -p src/tsconfig.node.json",
+    "dist:build:lib": "tsc -p src/tsconfig.lib.json",
     "script:make_dist": "node build/scripts/make_dist.js",
-    "dist": "npm-run-all build lint script:make_dist dist:build:node",
+    "dist": "npm-run-all build lint script:make_dist dist:build:lib",
     "script:make_fixture_loader": "node build/scripts/make_fixture_loader.js",
     "script:make_test_launcher": "node build/scripts/make_test_launcher.js",
     "script:make_zip_fixtures": "node build/scripts/make_zip_fixtures",
@@ -114,5 +115,8 @@
   "dependencies": {
     "async": "~2.6.1",
     "pako": "~1.0.6"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npm.alibaba-inc.com"
   }
 }

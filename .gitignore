@@ -5,6 +5,7 @@ doc
 *.log
 *.json
 !tsconfig.json
+!tsconfig.lib.json
 test/fixtures
 test/harness/load_fixtures.ts
 test/harness/factories/workerfs_worker.js*
@@ -24,5 +25,6 @@ generated_node_tsconfig.json
 coverage
 /gulptasks.js*
 dist
+lib
 .vscode
 .tscache
