@@ -3,8 +3,7 @@
  */
 import fs from '../../../../src/core/node_fs';
 import assert from '../../../harness/wrapped-assert';
-import OverlayFS from '../../../../src/backend/OverlayFS';
-const logPath = '/.deletedFiles.log';
+import OverlayFS, { deletionLogPath as logPath } from '../../../../src/backend/OverlayFS';
 declare var __numWaiting: number;
 
 export default function() {

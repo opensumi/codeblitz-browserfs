@@ -62,7 +62,7 @@ interface FileStat {
   size: number;
 }
 
-export interface RequestOptions<T = any> {
+export interface DynamicRequestOptions<T = any> {
   /**
    * 文件 metadata
    */
@@ -105,7 +105,7 @@ export default class DynamicRequest<T = any> extends BaseFileSystem implements F
    * Construct an CodeHost file system backend with the given options.
    * 可通过接口一次性加载所有文件，但对于工程较大时耗时较长，因此采用按需加载方式，初始只加载根目录
    */
-  public static Create<T = any>(opts: RequestOptions, cb: BFSCallback<DynamicRequest>): void {
+  public static Create<T = any>(opts: DynamicRequestOptions, cb: BFSCallback<DynamicRequest>): void {
     const fs = new DynamicRequest<T>(opts);
     cb(null, fs);
   }
@@ -120,7 +120,7 @@ export default class DynamicRequest<T = any> extends BaseFileSystem implements F
   private _readDirectory: (p: string, data?: T) => Promise<FileEntry[]>;
   private _readFile: (p: string, data?: T) => Promise<Uint8Array>;
 
-  public constructor(opts: RequestOptions) {
+  public constructor(opts: DynamicRequestOptions) {
     super();
     this._index = new FileIndex();
     this._stat = wrap(opts.stat);
@@ -286,7 +286,7 @@ export default class DynamicRequest<T = any> extends BaseFileSystem implements F
         if (inode.entriesLoaded) {
           cb(null, inode.getListing());
         } else {
-          cb(new ApiError(ErrorCode.EINVAL, 'Failed to readdir'))
+          cb(new ApiError(ErrorCode.EINVAL, 'Failed to readdir'));
         }
       } else {
         cb(ApiError.ENOTDIR(path));
