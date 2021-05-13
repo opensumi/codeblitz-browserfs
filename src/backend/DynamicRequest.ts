@@ -283,7 +283,11 @@ export default class DynamicRequest<T = any> extends BaseFileSystem implements F
       if (inode === null) {
         cb(ApiError.ENOENT(path));
       } else if (isDirInode(inode)) {
-        cb(null, inode.getListing() || []);
+        if (inode.entriesLoaded) {
+          cb(null, inode.getListing());
+        } else {
+          cb(new ApiError(ErrorCode.EINVAL, 'Failed to readdir'))
+        }
       } else {
         cb(ApiError.ENOTDIR(path));
       }
