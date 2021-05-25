@@ -38,14 +38,14 @@ function finallyPromise(promise: Promise<any>, onFinally: () => void | Promise<v
   );
 }
 
-function wrap(fn: (...args: any[]) => any) {
+function wrap<T = any>(fn: (...args: any[]) => T | Promise<T>) {
   const cache = new Map<string, Promise<any>>();
   return function(this: any, ...args: any[]) {
     const key = args[0];
     if (cache.has(key)) {
       return cache.get(key)!;
     }
-    const promise = fn.call(this, ...args);
+    const promise = Promise.resolve(fn.call(this, ...args));
     cache.set(key, promise);
     return finallyPromise(promise, () => {
       cache.delete(key);
@@ -65,18 +65,19 @@ interface FileStat {
 export interface DynamicRequestOptions<T = any> {
   /**
    * 文件 metadata
+   * 可选，无 stat 时，size 为 -1，在请求文件时会自动回填 file size
    */
-  stat(p: string, data?: T): Promise<FileStat>;
+  stat?(p: string, data?: T): FileStat | Promise<FileStat>;
 
   /**
    * 检索文件夹所有条目
    */
-  readDirectory(p: string, data?: T): Promise<FileEntry[]>;
+  readDirectory(p: string, data?: T): FileEntry[] | Promise<FileEntry[]>;
 
   /**
    * 读取文件内容
    */
-  readFile(p: string, data?: T): Promise<Uint8Array>;
+  readFile(p: string, data?: T): Uint8Array | Promise<Uint8Array>;
 }
 
 /**
@@ -116,14 +117,14 @@ export default class DynamicRequest<T = any> extends BaseFileSystem implements F
 
   public readonly prefixUrl: string;
   private _index: FileIndex<{}>;
-  private _stat: (p: string, data?: T) => Promise<FileStat>;
+  private _stat?: (p: string, data?: T) => Promise<FileStat>;
   private _readDirectory: (p: string, data?: T) => Promise<FileEntry[]>;
   private _readFile: (p: string, data?: T) => Promise<Uint8Array>;
 
   public constructor(opts: DynamicRequestOptions) {
     super();
     this._index = new FileIndex();
-    this._stat = wrap(opts.stat);
+    this._stat = opts.stat && wrap(opts.stat);
     this._readDirectory = wrap(opts.readDirectory);
     this._readFile = wrap(opts.readFile);
   }
@@ -217,7 +218,7 @@ export default class DynamicRequest<T = any> extends BaseFileSystem implements F
     let stats: Stats;
     if (isFileInode<Stats>(inode)) {
       stats = inode.getData();
-      if (stats.size < 0) {
+      if (stats.size < 0 && this._stat) {
         this._stat(path, inode.getExtendData())
           .then(({ size }) => {
             stats.size = size;

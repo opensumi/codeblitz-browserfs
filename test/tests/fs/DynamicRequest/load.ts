@@ -38,7 +38,7 @@ export default function() {
 
   BrowserFS.FileSystem.DynamicRequest.Create({
     readDirectory(p: string) {
-      return Promise.resolve(dirMap[p]);
+      return dirMap[p];
     },
     readFile(p) {
       return fetch(p).then(res => res.arrayBuffer()).then(buf => new Uint8Array(buf))
