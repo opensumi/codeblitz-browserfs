@@ -1,5 +1,5 @@
 {
-  "name": "@alipay/alex-browserfs",
+  "name": "@codeblitzjs/ide-browserfs",
   "version": "2.1.0",
   "description": "A filesystem in your browser!",
   "main": "dist/browserfs.js",
