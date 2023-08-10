@@ -1,6 +1,6 @@
 {
   "name": "@codeblitzjs/ide-browserfs",
-  "version": "2.1.0",
+  "version": "1.0.0",
   "description": "A filesystem in your browser!",
   "main": "dist/browserfs.js",
   "typings": "dist/browserfs",
@@ -115,8 +115,5 @@
   "dependencies": {
     "async": "~2.6.1",
     "pako": "~1.0.6"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npm.alibaba-inc.com"
   }
 }
