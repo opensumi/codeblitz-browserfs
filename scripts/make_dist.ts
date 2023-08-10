@@ -33,7 +33,7 @@ rimraf(distFolder, (err) => {
 
   // TypeScript interface
   fs.writeFileSync(path.join(distFolder, 'browserfs.d.ts'),
-`export * from './node/index';
+`export * from '../lib/index';
 export as namespace BrowserFS;
 `);
 

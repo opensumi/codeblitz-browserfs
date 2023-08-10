@@ -5,6 +5,11 @@
 [![Build Status](https://ci.appveyor.com/api/projects/status/bammh2x1bud8h7a5/branch/master?svg=true)](https://ci.appveyor.com/project/jvilk/browserfs/branch/master)
 [![NPM version](https://badge.fury.io/js/browserfs.svg)](http://badge.fury.io/js/browserfs)
 
+### Fork Changes
+* add `DynamicRequest`: this implement interface link vscode FileSystemProvide, can dynamic get directory dynamically
+* change mutex to rwmutex for locked_fs, this can increase the amount of concurrency when reading more and writing less
+* fix stat error when it is deleted
+
 ### Backends
 
 BrowserFS is highly extensible, and ships with many filesystem backends:

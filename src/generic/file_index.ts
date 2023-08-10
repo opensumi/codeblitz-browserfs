@@ -257,11 +257,14 @@ export interface Inode {
  * Inode for a file. Stores an arbitrary (filesystem-specific) data payload.
  */
 export class FileInode<T> implements Inode {
+  private extendData: any;
   constructor(private data: T) { }
   public isFile(): boolean { return true; }
   public isDir(): boolean { return false; }
   public getData(): T { return this.data; }
   public setData(data: T): void { this.data = data; }
+  public getExtendData<D = unknown>(): D | undefined { return this.extendData; }
+  public setExtendData<D = unknown>(extendData: D | undefined): void { this.extendData = extendData; }
 }
 
 /**
@@ -269,6 +272,9 @@ export class FileInode<T> implements Inode {
  */
 export class DirInode<T> implements Inode {
   private _ls: {[path: string]: Inode} = {};
+  /** whether entries has been loaded */
+  private _entriesLoaded = false;
+  private extendData: any;
   /**
    * Constructs an inode for a directory.
    */
@@ -334,6 +340,14 @@ export class DirInode<T> implements Inode {
     delete this._ls[p];
     return item;
   }
+  get entriesLoaded() {
+    return this._entriesLoaded;
+  }
+  set entriesLoaded(value: boolean) {
+    this._entriesLoaded = value;
+  }
+  public getExtendData<T = unknown>(): T | undefined { return this.extendData; }
+  public setExtendData<T = unknown>(extendData: T | undefined): void { this.extendData = extendData; }
 }
 
 /**

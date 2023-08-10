@@ -3,8 +3,7 @@
  */
 import fs from '../../../../src/core/node_fs';
 import assert from '../../../harness/wrapped-assert';
-import OverlayFS from '../../../../src/backend/OverlayFS';
-const logPath = '/.deletedFiles.log';
+import OverlayFS, { deletionLogPath as logPath } from '../../../../src/backend/OverlayFS';
 declare var __numWaiting: number;
 
 export default function() {
@@ -20,6 +19,9 @@ export default function() {
   // Delete a file in the underlay.
   fs.unlinkSync('/test/fixtures/files/node/a.js');
   assert(!fs.existsSync('/test/fixtures/files/node/a.js'), 'Failed to properly delete a.js.');
+  fs.stat('/test/fixtures/files/node/a.js', (err) => {
+    assert(err !== null, 'Failed to stat a.js after unlink')
+  })
   // Try to move the deletion log.
   assert.throws(function() { fs.renameSync(logPath, logPath + "2"); }, 'Should not be able to rename the deletion log.');
   // Move another file over the deletion log.

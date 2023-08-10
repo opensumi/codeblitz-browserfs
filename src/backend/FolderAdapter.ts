@@ -30,6 +30,16 @@ export interface FolderAdapterOptions {
  * });
  * ```
  */
+
+function stripTrailingSlash(p: string) {
+  if (p === '/') {
+    return p;
+  }
+  if (p.charAt(p.length - 1) === '/') {
+    return p.slice(0, -1);
+  }
+  return p;
+}
 export default class FolderAdapter extends BaseFileSystem implements FileSystem {
   public static readonly Name = "FolderAdapter";
 
@@ -134,10 +144,10 @@ function wrapFunction(name: string, wrapFirst: boolean, wrapSecond: boolean): Fu
     return function(this: FolderAdapter) {
       if (arguments.length > 0) {
         if (wrapFirst) {
-          arguments[0] = path.join(this._folder, arguments[0]);
+          arguments[0] = stripTrailingSlash(path.join(this._folder, arguments[0]));
         }
         if (wrapSecond) {
-          arguments[1] = path.join(this._folder, arguments[1]);
+          arguments[1] = stripTrailingSlash(path.join(this._folder, arguments[1]));
         }
         arguments[arguments.length - 1] = wrapCallback(this._folder, arguments[arguments.length - 1]);
       }
@@ -148,10 +158,10 @@ function wrapFunction(name: string, wrapFirst: boolean, wrapSecond: boolean): Fu
     return function(this: FolderAdapter) {
       try {
         if (wrapFirst) {
-          arguments[0] = path.join(this._folder, arguments[0]);
+          arguments[0] = stripTrailingSlash(path.join(this._folder, arguments[0]));
         }
         if (wrapSecond) {
-          arguments[1] = path.join(this._folder, arguments[1]);
+          arguments[1] = stripTrailingSlash(path.join(this._folder, arguments[1]));
         }
         return (<any> this._wrapped)[name].apply(this._wrapped, arguments);
       } catch (e) {
